@@ -1,5 +1,3 @@
-// req import, logging output with console
-
 import { Request, Response } from 'express';
 import validator from 'validator';
 import nconf from 'nconf';
@@ -67,35 +65,26 @@ const tagsController: {
     getTags: (req: CustomRequest, res: Response) => Promise<void>;
     } = {
         getTag: async function (req: CustomRequest, res: Response) {
+            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
             const tag: string = validator.escape(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 String(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength))
             );
             const page: number = parseInt(req.query.page as string, 10) || 1;
-            const cid: string | string[] = (
-                Array.isArray(req.query.cid) ? req.query.cid : [req.query.cid]
-                ) as string | string[];
+            const cid: string[] = (Array.isArray(req.query.cid) ? req.query.cid : [req.query.cid]) as string[];
 
             const templateData: TemplateData = {
                 topics: [],
                 tag: tag,
-                breadcrumbs: [{
-                    text: '[[tags:tags]]',
-                    url: '/tags',
-                }, {
-                    text: tag,
-                }] as {
-                    text: string;
-                    url: string;
-                }[],
+                breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
                 title: `[[pages:tag, ${tag}]]`,
             };
 
-            const [settings, cids, categoryData, isPrivileged]: [Settings, string | string[], CategoryData,
+            const [settings, cids, categoryData, isPrivileged]: [Settings, string[], CategoryData,
             boolean] = await Promise.all([
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 user.getSettings(req.uid) as Settings,
-                cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read') as string | string[],
+                cid || categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read') as string[],
                 helpers.getSelectedCategory(cid),
                 user.isPrivileged(req.uid) as boolean,
             ]);
@@ -146,6 +135,7 @@ const tagsController: {
         },
 
         getTags: async function (req: CustomRequest, res: Response) {
+            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
             const cids = await categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read') as number[];
             const [canSearch, tags]: [boolean, string[]] = await Promise.all([
                 privileges.global.can('search:tags', req.uid) as boolean,

@@ -1,5 +1,4 @@
 "use strict";
-// req import, logging output with console
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -48,6 +47,7 @@ const helpers = __importStar(require("./helpers"));
 const tagsController = {
     getTag: function (req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
             const tag = validator_1.default.escape(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             String(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength)));
@@ -56,12 +56,7 @@ const tagsController = {
             const templateData = {
                 topics: [],
                 tag: tag,
-                breadcrumbs: [{
-                        text: '[[tags:tags]]',
-                        url: '/tags',
-                    }, {
-                        text: tag,
-                    }],
+                breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
                 title: `[[pages:tag, ${tag}]]`,
             };
             const [settings, cids, categoryData, isPrivileged] = yield Promise.all([
@@ -113,6 +108,7 @@ const tagsController = {
     },
     getTags: function (req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
             const cids = yield categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read');
             const [canSearch, tags] = yield Promise.all([
                 privileges.global.can('search:tags', req.uid),
