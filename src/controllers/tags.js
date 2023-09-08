@@ -45,10 +45,10 @@ const pagination = __importStar(require("../pagination"));
 const utils = __importStar(require("../utils"));
 const helpers = __importStar(require("./helpers"));
 const tagsController = {
-    getTag: function (req, res) {
+    getTag(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('');
-            console.log(req);
+            console.log('New Function Call');
+            console.log('-----------------');
             console.log('req cids:', req.query.cid);
             console.log('req tag:', req.params.tag);
             const tag = validator_1.default.escape(
@@ -56,7 +56,7 @@ const tagsController = {
             utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
             const page = parseInt(req.query.page, 10) || 1;
             const cid = (Array.isArray(req.query.cid) ? req.query.cid : [req.query.cid]);
-            console.log(' after assignment cids', cid);
+            console.log('cids', cid);
             const templateData = {
                 topics: [],
                 tag: tag,
@@ -119,7 +119,7 @@ const tagsController = {
             res.render('tag', templateData);
         });
     },
-    getTags: function (req, res) {
+    getTags(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const cids = yield categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read');
             const [canSearch, tags] = yield Promise.all([
