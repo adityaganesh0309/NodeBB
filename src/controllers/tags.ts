@@ -10,6 +10,8 @@ import * as pagination from '../pagination';
 import * as utils from '../utils';
 import * as helpers from './helpers';
 
+// ChatGPT and Google were heavily used for this translation
+
 interface Crumb {
     text: string;
     url: string;
@@ -17,10 +19,6 @@ interface Crumb {
 
 interface Settings {
     topicsPerPage: number;
-}
-
-interface CustomRequest extends Request {
-    uid: number;
 }
 
 interface SelectedCategory {
@@ -61,17 +59,21 @@ interface TemplateData {
 }
 
 const tagsController: {
-    getTag: (req: CustomRequest, res: Response) => Promise<void>;
-    getTags: (req: CustomRequest, res: Response) => Promise<void>;
+    getTag: (req: Request & { uid: number }, res: Response) => Promise<void>;
+    getTags: (req: Request & { uid: number }, res: Response) => Promise<void>;
     } = {
-        getTag: async function (req: CustomRequest, res: Response) {
-            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
+        getTag: async function (req: Request & { uid: number }, res: Response) {
+            console.log('');
+            console.log('req cids:', req.query.cid);
+            console.log('req tag:', req.params.tag);
             const tag: string = validator.escape(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                String(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength))
+                utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength) as string
             );
             const page: number = parseInt(req.query.page as string, 10) || 1;
             const cid: string[] = (Array.isArray(req.query.cid) ? req.query.cid : [req.query.cid]) as string[];
+
+            console.log('cids', cid);
 
             const templateData: TemplateData = {
                 topics: [],
@@ -94,6 +96,11 @@ const tagsController: {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const stop: number = start + (settings.topicsPerPage) - 1;
 
+            console.log('before waiting start:', start);
+            console.log('before waiting stop:', stop);
+            console.log('before waiting tag:', tag);
+            console.log('before waiting cids:', cids);
+
             const [topicCount, tids]: [number, number[]] = await Promise.all([
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 topics.getTagTopicCount(tag, cids) as number,
@@ -101,7 +108,12 @@ const tagsController: {
                 topics.getTagTidsByCids(tag, cids, start, stop) as number[],
             ]);
 
+            console.log('tids:', tids);
+            console.log('topicCount:', topicCount);
+            console.log('uid:', req.uid);
+            console.log('before waiting topics length:', templateData.topics.length);
             templateData.topics = await topics.getTopics(tids, req.uid) as string[];
+            console.log('after waiting topics length:', templateData.topics.length);
             templateData.showSelect = isPrivileged;
             templateData.showTopicTools = isPrivileged;
             templateData.allCategoriesUrl = `tags/${tag}${helpers.buildQueryString(req.query, 'cid', '')}`;
@@ -134,8 +146,7 @@ const tagsController: {
             res.render('tag', templateData);
         },
 
-        getTags: async function (req: CustomRequest, res: Response) {
-            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
+        getTags: async function (req: Request & { uid: number }, res: Response) {
             const cids = await categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read') as number[];
             const [canSearch, tags]: [boolean, string[]] = await Promise.all([
                 privileges.global.can('search:tags', req.uid) as boolean,

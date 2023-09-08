@@ -47,12 +47,16 @@ const helpers = __importStar(require("./helpers"));
 const tagsController = {
     getTag: function (req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
+            console.log('');
+            console.log(req);
+            console.log('req cids:', req.query.cid);
+            console.log('req tag:', req.params.tag);
             const tag = validator_1.default.escape(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            String(utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength)));
+            utils.cleanUpTag(req.params.tag, meta.config.maximumTagLength));
             const page = parseInt(req.query.page, 10) || 1;
             const cid = (Array.isArray(req.query.cid) ? req.query.cid : [req.query.cid]);
+            console.log(' after assignment cids', cid);
             const templateData = {
                 topics: [],
                 tag: tag,
@@ -70,13 +74,22 @@ const tagsController = {
             const start = Math.max(0, (page - 1) * settings.topicsPerPage);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             const stop = start + (settings.topicsPerPage) - 1;
+            console.log('before waiting start:', start);
+            console.log('before waiting stop:', stop);
+            console.log('before waiting tag:', tag);
+            console.log('before waiting cids:', cids);
             const [topicCount, tids] = yield Promise.all([
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 topics.getTagTopicCount(tag, cids),
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 topics.getTagTidsByCids(tag, cids, start, stop),
             ]);
+            console.log('tids:', tids);
+            console.log('topicCount:', topicCount);
+            console.log('uid:', req.uid);
+            console.log('before waiting topics length:', templateData.topics.length);
             templateData.topics = (yield topics.getTopics(tids, req.uid));
+            console.log('after waiting topics length:', templateData.topics.length);
             templateData.showSelect = isPrivileged;
             templateData.showTopicTools = isPrivileged;
             templateData.allCategoriesUrl = `tags/${tag}${helpers.buildQueryString(req.query, 'cid', '')}`;
@@ -108,7 +121,6 @@ const tagsController = {
     },
     getTags: function (req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('HELLOOOÓ4433444445ggfdgwdfgergwrgregrewgwergerwgewrgwergwergergergwergwergerggfg590rhbhgfkjbkfgdbf');
             const cids = yield categories.getCidsByPrivilege('categories:cid', req.uid, 'topics:read');
             const [canSearch, tags] = yield Promise.all([
                 privileges.global.can('search:tags', req.uid),
